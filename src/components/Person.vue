@@ -1,56 +1,41 @@
 <template>
     <div class="person">
-        <h2>name:{{ person.name }}</h2>
-        <h2>age:{{ person.age }}</h2>
-
-        <button @click="changeName">修改名字</button>
-        <button @click="changeAge">修改年龄</button>
-        <button @click="showTel">显示电话</button>
+        familyName: <input type="text" v-model="familyName"><br>
+        givenName: <input type="text" v-model="givenName"><br>
+        Name:<span>{{ fullName }}</span><br>
+        <button @click="changefullName">change Name</button>
     </div>
 </template>
 
 <script lang="ts" setup name="Person">
+    import {ref,computed} from 'vue'
+    
+    let familyName=ref('zhang')
+    let givenName=ref('san')
 
-    import { ref,reactive,toRefs } from 'vue'
+    // //如此定义的fullName只读，箭头函数有点跳出于知识框架了
+    // let fullName=computed(()=>{
+    //     return familyName.value.slice(0,1).toUpperCase()+familyName.value.slice(1)+
+    //     ' '+givenName.value.slice(0,1).toUpperCase()+givenName.value.slice(1)
+    // })
 
-    let person =reactive({
-        name:'zhang san',
-        age:18,
+    //如此定义的fullName可读可写，箭头函数有点跳出于知识框架了
+    let fullName=computed({
+        get(){
+            return familyName.value.slice(0,1).toUpperCase()+familyName.value.slice(1)+
+            ' '+givenName.value.slice(0,1).toUpperCase()+givenName.value.slice(1)
+        },
+        set(val){
+            console.log('set',val)
+            const [str1,str2]=val.split(' ')
+            familyName.value=str1
+            givenName.value=str2
+        }
     })
 
-    let{name,age}=toRefs(person)
-
-    function changeName(){
-        name.value +='~',
-        console.log(name.value,person.name)
+    function changefullName(){
+        fullName.value='Li Si'
     }
-
-    function changeAge(){
-        age.value++
-    }
-
-    // let name=ref("zhang san")
-    // let age=ref(18)
-    // let tel='13888888'
-
-    // console.log(1,name)
-    // console.log(2,age)
-
-    // //方法
-    // function changeName (){
-    //     console.log(1)
-    //     name.value ='li si'//页面无变化
-    //     console.log(name)
-    // }
-    // function changeAge(){
-    //     age.value += 1
-    //     console.log(2)
-    //     console.log(age)
-    // }
-    // function showTel(){
-    //     alert(tel)
-        
-    // }
 </script>
 
 <style scoped>
