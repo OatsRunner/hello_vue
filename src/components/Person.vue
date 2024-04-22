@@ -39,15 +39,12 @@
     function changeCar(){
         person.car={c1:'yadi',c2:'aima'}
     }
-    //case4，监视reactive对象内某个属性
+    //case5，监视reactive对象内多个属性
     //getter能返回一个值的函数
-    watch(()=>{return person.name},(newValue,oldValue)=>{
+    watch([()=>{return person.name},()=>person.car.c1],(newValue,oldValue)=>{
         console.log('changed',newValue,oldValue)
     })
-    //case4，监视reactive对象内某个属性,且该对象为对象类型可以直接写也可以写函数，推荐写函数
-    watch(()=>{return person.car},(newValue,oldValue)=>{
-        console.log('carchanged',newValue,oldValue)
-    },{deep:true})
+    
 
 </script>
 
