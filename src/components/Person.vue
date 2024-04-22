@@ -1,54 +1,42 @@
 <template>
     <div class="person">
-        <h1>case1:监视ref定义的基本类型数据</h1>
-        <h2>the sum is {{ sum }}</h2>
-        <button @click="changesum">sum++</button>
         
-        <h1>case2:监视ref定义的对象类型数据</h1>
+        <h1>case3:监视reactie定义的对象类型数据</h1>
         <h2>name:{{ person.name }}</h2>
         <h2>age:{{ person.age }}</h2>
         <button @click="changename">changename</button>
         <button @click="changeage">changeage</button>
         <button @click="changeperson">changeperson</button>
-
+        <
     </div>
 </template>
 
 <script lang="ts" setup name="Person">
-    import {ref,watch} from 'vue'
+    import {reactive,watch,computed} from 'vue'
     //data
-    let sum=ref(0);
 
-    let person=ref({
+    let person=reactive({
         name:'zhang san',
         age:18,
     })
 
     //function
-    function changesum(){
-        sum.value++
-    }
+
 
     function changename(){
-        person.value.name+='~'
+        person.name+='~'
     }
 
     function changeage(){
-        person.value.age ++
+        person.age ++
     }
 
     function changeperson(){
-        person.value={name:'li si',age:90}
+        Object.assign(person,{name:'li si',age:90})
+        //利用Object.assign类似于强行批量替换对象内的元素，但是ref可以直接替换person对象
     }
 
-    //watch,case1
-    const stopWatch = watch(sum,(newValue,oldValue)=>{
-        console.log('sum changed',newValue,oldValue)
-        if(newValue>=10){
-            stopWatch()
-        }
-    })
-    //case2，监视的是对象的地址值，若需要监视对象内部属性的变化，需手动开启深度监视
+    //case3，监视的是reactive对象的地址值，若需要监视对象内部属性的变化，默认开启深度监视
     //watch第一个参数是被监视的数据
     //watch第二个参数是监视回调
     //watch第三个参数是配置
