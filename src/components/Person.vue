@@ -1,48 +1,53 @@
 <template>
     <div class="person">
-        
-        <h1>case3:监视reactie定义的对象类型数据</h1>
         <h2>name:{{ person.name }}</h2>
         <h2>age:{{ person.age }}</h2>
-        <button @click="changename">changename</button>
-        <button @click="changeage">changeage</button>
-        <button @click="changeperson">changeperson</button>
-        <
+        <h2>car:{{ person.car.c1 }} {{ person.car.c2 }}</h2>
+        <button @click="changeName">changeName</button>
+        <button @click="changeAge">changeAge</button>
+        <button @click="changeC1">changeC1</button>
+        <button @click="changeC2">changeC2</button>
+        <button @click="changeCar">changeCar</button>
     </div>
 </template>
 
 <script lang="ts" setup name="Person">
-    import {reactive,watch,computed} from 'vue'
+    import {reactive,watch} from 'vue'
     //data
-
-    let person=reactive({
-        name:'zhang san',
+    let person =reactive({
+        name:"zhang san",
         age:18,
+        car:{
+            c1:"benz",
+            c2:"BMW"
+        }
     })
-
+   
     //function
-
-
-    function changename(){
+    function changeName(){
         person.name+='~'
     }
-
-    function changeage(){
-        person.age ++
+    function changeAge(){
+        person.age+=1
     }
-
-    function changeperson(){
-        Object.assign(person,{name:'li si',age:90})
-        //利用Object.assign类似于强行批量替换对象内的元素，但是ref可以直接替换person对象
+    function changeC1(){
+        person.car.c1='audi'
     }
-
-    //case3，监视的是reactive对象的地址值，若需要监视对象内部属性的变化，默认开启深度监视
-    //watch第一个参数是被监视的数据
-    //watch第二个参数是监视回调
-    //watch第三个参数是配置
-    watch(person,(newValue,oldValue)=>{
-        console.log('personchanged',newValue,oldValue)
-    },{deep:true,immediate:true}/*watch的属性 */)
+    function changeC2(){
+        person.car.c2='volks'
+    }
+    function changeCar(){
+        person.car={c1:'yadi',c2:'aima'}
+    }
+    //case4，监视reactive对象内某个属性
+    //getter能返回一个值的函数
+    watch(()=>{return person.name},(newValue,oldValue)=>{
+        console.log('changed',newValue,oldValue)
+    })
+    //case4，监视reactive对象内某个属性,且该对象为对象类型可以直接写也可以写函数，推荐写函数
+    watch(()=>{return person.car},(newValue,oldValue)=>{
+        console.log('carchanged',newValue,oldValue)
+    },{deep:true})
 
 </script>
 
