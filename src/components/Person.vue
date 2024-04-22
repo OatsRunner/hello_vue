@@ -1,41 +1,61 @@
 <template>
     <div class="person">
-        familyName: <input type="text" v-model="familyName"><br>
-        givenName: <input type="text" v-model="givenName"><br>
-        Name:<span>{{ fullName }}</span><br>
-        <button @click="changefullName">change Name</button>
+        <h1>case1:监视ref定义的基本类型数据</h1>
+        <h2>the sum is {{ sum }}</h2>
+        <button @click="changesum">sum++</button>
+        
+        <h1>case2:监视ref定义的对象类型数据</h1>
+        <h2>name:{{ person.name }}</h2>
+        <h2>age:{{ person.age }}</h2>
+        <button @click="changename">changename</button>
+        <button @click="changeage">changeage</button>
+        <button @click="changeperson">changeperson</button>
+
     </div>
 </template>
 
 <script lang="ts" setup name="Person">
-    import {ref,computed} from 'vue'
-    
-    let familyName=ref('zhang')
-    let givenName=ref('san')
+    import {ref,watch} from 'vue'
+    //data
+    let sum=ref(0);
 
-    // //如此定义的fullName只读，箭头函数有点跳出于知识框架了
-    // let fullName=computed(()=>{
-    //     return familyName.value.slice(0,1).toUpperCase()+familyName.value.slice(1)+
-    //     ' '+givenName.value.slice(0,1).toUpperCase()+givenName.value.slice(1)
-    // })
-
-    //如此定义的fullName可读可写，箭头函数有点跳出于知识框架了
-    let fullName=computed({
-        get(){
-            return familyName.value.slice(0,1).toUpperCase()+familyName.value.slice(1)+
-            ' '+givenName.value.slice(0,1).toUpperCase()+givenName.value.slice(1)
-        },
-        set(val){
-            console.log('set',val)
-            const [str1,str2]=val.split(' ')
-            familyName.value=str1
-            givenName.value=str2
-        }
+    let person=ref({
+        name:'zhang san',
+        age:18,
     })
 
-    function changefullName(){
-        fullName.value='Li Si'
+    //function
+    function changesum(){
+        sum.value++
     }
+
+    function changename(){
+        person.value.name+='~'
+    }
+
+    function changeage(){
+        person.value.age ++
+    }
+
+    function changeperson(){
+        person.value={name:'li si',age:90}
+    }
+
+    //watch,case1
+    const stopWatch = watch(sum,(newValue,oldValue)=>{
+        console.log('sum changed',newValue,oldValue)
+        if(newValue>=10){
+            stopWatch()
+        }
+    })
+    //case2，监视的是对象的地址值，若需要监视对象内部属性的变化，需手动开启深度监视
+    //watch第一个参数是被监视的数据
+    //watch第二个参数是监视回调
+    //watch第三个参数是配置
+    watch(person,(newValue,oldValue)=>{
+        console.log('personchanged',newValue,oldValue)
+    },{deep:true,immediate:true}/*watch的属性 */)
+
 </script>
 
 <style scoped>
